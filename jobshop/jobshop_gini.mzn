@@ -1,3 +1,5 @@
+include "../blackbox_impl.mzn";
+
 % === Meta Parameters ============================================= %
 
 int: mode; %%  -2  decomposition
@@ -17,7 +19,7 @@ enum CASES = { MinDis % Minimise dispersion (bound on efficiency)
              , MkspanPeter % Same as above but include constraints
                            % across agents
              , FndBnd % Maximise efficiency (no bound on dispersion).
-                      % Used to find bound to use for MinDis/MaxEff        
+                      % Used to find bound to use for MinDis/MaxEff
              };
 
 CASES: Case;
@@ -47,18 +49,18 @@ array [J,T] of var opt 0..infinity: start;
 array [J] of var opt 0..infinity: done;
 
 % `var opt' optimisation
-constraint forall (j in J, t in T) 
-( if absent(start[j,t]) 
+constraint forall (j in J, t in T)
+( if absent(start[j,t])
     then deopt(start[j,t]) = end+1
     else deopt(start[j,t]) <= end endif );
-     
+
 % === Meta Constraints ============================================ %
 
 constraint if Case in {Mkspan, MkspanPeter} then
              forall (j in J)
               ( occurs(done[j]) )
            endif;
-     
+
 % === Scheduling Constraints ====================================== %
 include "cumulative.mzn";
 
@@ -74,12 +76,12 @@ constraint if Case = Mkspan then forall (m in M, a in A)
  ( cumulative( [ deopt(start[j,t])           | j in J, t in T where mac[j,t]=m /\ alloc[j] = a ],
                [ occurs(start[j,t])*dur[j,t] | j in J, t in T where mac[j,t]=m /\ alloc[j] = a ],
                [ 1                           | j in J, t in T where mac[j,t]=m /\ alloc[j] = a ],
-                 1 ) 
+                 1 )
  ) else forall (m in M)
  ( cumulative( [ deopt(start[j,t])           | j in J, t in T where mac[j,t]=m ],
                [ occurs(start[j,t])*dur[j,t] | j in J, t in T where mac[j,t]=m ],
                [ 1                           | j in J, t in T where mac[j,t]=m ],
-                 1 ) 
+                 1 )
  ) endif;
 
 % start-done channelling
@@ -102,20 +104,20 @@ constraint UTIL = sum(util);
 constraint forall (a in A)
  ( util[a] = sum (j in J, t in T where alloc[j] = a)
     ( occurs(done[j])*dur[j,t] ) );
-    
+
 constraint if Case in {MinDis, MaxEff} then
              gini(disp, util, UTIL, 10000)
            else
              disp = 1
            endif;
-                      
+
 % Bound on efficiency
 constraint (Case = MinDis) ->
  ( UTIL >= bnd );
- 
+
 % Bound on dispersion
 constraint (Case = MaxEff) ->
- ( disp <= bnd*1 ); % already scaled 
+ ( disp <= bnd*1 ); % already scaled
 
 % === Objective =================================================== %
 
@@ -152,18 +154,20 @@ solve :: searchann minimize obj;
 %%         0 = Propagate Gini when X fixed.
 
 predicate gini(var int: v, array [int] of var int: X, var int: S, int: scale) =
-  if mode = -1 \/ mode = -2 then
+	if mode = 666 then
+		gini_BB(v, X, scale)
+  elseif mode = -1 \/ mode = -2 then
     gini_decomp(X, S, v, scale)
   elseif mode = 12 then
     gini_decomp(X, S, v, scale) /\ gini_int(v, X, S, scale, 9)
   else
     gini_int(v, X, S, scale, mode)
   endif;
-  
+
 predicate gini_decomp(array[int] of var int: X, var int: M, var int: v, int: s) =
   let { int: n=length(X);
         array[int] of var 0..500000000: diffs = [ abs(X[i]-X[j]) | i,j in index_set(X) where i<j];
-        var 0..500000000: tot_diff = sum(diffs) * s; 
+        var 0..500000000: tot_diff = sum(diffs) * s;
         var 0..500000000: result_ = tot_diff div n;
         var 0..500000000: result = abs(result_) div abs(M)}
   in v = result;

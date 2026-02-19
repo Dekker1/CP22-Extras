@@ -1,3 +1,5 @@
+include "../blackbox_impl.mzn";
+
 % === Meta Parameters ============================================= %
 
 int: mode; %% 0 (minnimal), -2 (decomp), 9 (lb), 10 (lb no daemon)
@@ -10,7 +12,7 @@ enum CASES = { MinDis % Minimise dispersion (bound on efficiency)
              , MkspanPeter % Same as above but include constraints
                            % across agents
              , FndBnd % Maximise efficiency (no bound on dispersion).
-                      % Used to find bound to use for MinDis/MaxEff        
+                      % Used to find bound to use for MinDis/MaxEff
              };
 
 CASES: Case;
@@ -39,18 +41,18 @@ array [J,T] of var opt 0..infinity: start;
 array [J] of var opt 0..infinity: done;
 
 % `var opt' optimisation
-constraint forall (j in J, t in T) 
-( if absent(start[j,t]) 
+constraint forall (j in J, t in T)
+( if absent(start[j,t])
     then deopt(start[j,t]) = end+1
     else deopt(start[j,t]) <= end endif );
-     
+
 % === Meta Constraints ============================================ %
 
 constraint if Case in {Mkspan, MkspanPeter} then
              forall (j in J)
               ( occurs(done[j]) )
            endif;
-     
+
 % === Scheduling Constraints ====================================== %
 include "cumulative.mzn";
 
@@ -66,12 +68,12 @@ constraint if Case = Mkspan then forall (m in M, a in A)
  ( cumulative( [ deopt(start[j,t])           | j in J, t in T where mac[j,t]=m /\ alloc[j] = a ],
                [ occurs(start[j,t])*dur[j,t] | j in J, t in T where mac[j,t]=m /\ alloc[j] = a ],
                [ 1                           | j in J, t in T where mac[j,t]=m /\ alloc[j] = a ],
-                 1 ) 
+                 1 )
  ) else forall (m in M)
  ( cumulative( [ deopt(start[j,t])           | j in J, t in T where mac[j,t]=m ],
                [ occurs(start[j,t])*dur[j,t] | j in J, t in T where mac[j,t]=m ],
                [ 1                           | j in J, t in T where mac[j,t]=m ],
-                 1 ) 
+                 1 )
  ) endif;
 
 % start-done channelling
@@ -93,20 +95,20 @@ constraint UTIL = sum(util);
 constraint forall (a in A)
  ( util[a] = sum (j in J, t in T where alloc[j] = a)
     ( occurs(done[j])*dur[j,t] ) );
-    
+
 constraint if Case in {MinDis, MaxEff} then
              spread(disp, util, UTIL, 1)
            else
              disp = 1
            endif;
-           
+
 % Bound on efficiency
 constraint (Case = MinDis) ->
  ( UTIL >= bnd );
- 
+
 % Bound on dispersion
 constraint (Case = MaxEff) ->
- ( disp <= bnd*1 ); 
+ ( disp <= bnd*1 );
 
 % === Objective =================================================== %
 
@@ -143,7 +145,9 @@ solve :: searchann minimize obj;
 %%         0 = Propagate variance when X fixed.
 
 predicate spread(var int: v, array [int] of var int: X, var int: S, int: scale) =
-  if mode = -1 then
+	if mode = 666 then
+		spread_BB(v, X, S, scale)
+  elseif mode = -1 then
     spread_decomp(v, X, S, scale)
   elseif mode = -2 then
     spread_decomp2(X, S, v, scale)
