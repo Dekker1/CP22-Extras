@@ -13,6 +13,7 @@ __pycache__
 
 # Software
 software/install
+software/build
 
 # Raw results (aggregation in results/ is lossless)
 output/

@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_PREFIX="${SCRIPT_DIR}/software/install"
+BUILD_ROOT="${SCRIPT_DIR}/software/build"
 
 if ! command -v cmake >/dev/null 2>&1; then
     >&2 echo "error: cmake is required but was not found on PATH"
@@ -10,11 +11,12 @@ if ! command -v cmake >/dev/null 2>&1; then
 fi
 
 echo "Installing software into ${INSTALL_PREFIX}"
+mkdir -p "${BUILD_ROOT}"
 
 build_and_install() {
     local name="$1"
     local source_dir="${SCRIPT_DIR}/software/${name}"
-    local build_dir="${source_dir}/build"
+    local build_dir="${BUILD_ROOT}/${name}"
 
     echo "==> configuring ${name}"
     cmake -S "${source_dir}" -B "${build_dir}" \
