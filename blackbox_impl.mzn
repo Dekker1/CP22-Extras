@@ -14,7 +14,7 @@ predicate spread_BB(var int: v, array [int] of var int: X, var int: S, int: scal
 		X ++ [S, v],
 		[],
 		reason,
-	) ::blackbox_dll("/Users/dekker1/Code/github.com/minizinc/libminizinc/build/Debug/libbb_spread.dylib");
+	) ::blackbox_dll("/home/dekker1/bench_bb/software/install/lib/libbb_spread.so");
 
 predicate gini_BB(var int: v, array [int] of var int: X, int: scale) =
 	let {
@@ -30,4 +30,4 @@ predicate gini_BB(var int: v, array [int] of var int: X, int: scale) =
 		X ++ [v],
 		[],
 		reason,
-	) ::blackbox_dll("/Users/dekker1/Code/github.com/minizinc/libminizinc/build/Debug/libbb_gini.dylib");
+	) ::blackbox_dll("/home/dekker1/bench_bb/software/install/lib/libbb_gini.so");
