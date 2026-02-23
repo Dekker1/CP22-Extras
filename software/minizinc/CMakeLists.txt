@@ -99,6 +99,12 @@ add_library(bb_gini SHARED bb_gini.cpp)
 target_link_libraries(bb_gini libminizinc-eval)
 add_library(bb_spread SHARED bb_spread.cpp)
 target_link_libraries(bb_spread libminizinc-eval)
+install(
+		TARGETS bb_gini bb_spread
+		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
 
 # -------------------------------------------------------------------------------------------------------------------
 #  -- Platform Specific configuration
