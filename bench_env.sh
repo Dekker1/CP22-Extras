@@ -6,8 +6,17 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_PREFIX="${SCRIPT_DIR}/software/install"
 
+__bench_old_set_opts="$(set +o)"
+__bench_restore_shell_opts() {
+    trap - RETURN
+    if [[ -n "${__bench_old_set_opts-}" ]]; then
+        eval "${__bench_old_set_opts}"
+        unset __bench_old_set_opts
+    fi
+}
+trap '__bench_restore_shell_opts' RETURN
+
 set -euo pipefail
-trap 'return 1' ERR
 
 if ! command -v uv >/dev/null 2>&1; then
     >&2 echo "error: uv is required but was not found on PATH"
