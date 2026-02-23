@@ -23,22 +23,27 @@ except ValueError as exc:
 CONFIGURATIONS = [
     Configuration(
         "Gecode Dcmp",
-        solver=minizinc.Solver.lookup("gecode"),
+        solver=minizinc.Solver.lookup("org.gecode.gecode"),
         extra_data={"mode": -2},
     ),
     Configuration(
         "Chuffed Dcmp",
-        solver=minizinc.Solver.lookup("chuffed"),
+        solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
         extra_data={"mode": -2},
     ),
     Configuration(
         "Gecode BB",
-        solver=minizinc.Solver.lookup("gecode"),
+        solver=minizinc.Solver.lookup("org.gecode.gecode"),
         extra_data={"mode": 666},
     ),
     Configuration(
         "Chuffed BB",
-        solver=minizinc.Solver.lookup("chuffed"),
+        solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
+        extra_data={"mode": 666},
+    ),
+    Configuration(
+        "Chuffed Prop",
+        solver=minizinc.Solver.lookup("org.chuffed.chuffed_aekh"),
         extra_data={"mode": 666},
     ),
 ]

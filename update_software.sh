@@ -13,12 +13,16 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 1
 fi
 
-TARGET_BRANCH="feat/blackbox"
+DEFAULT_TARGET_BRANCH="feat/blackbox"
 
 declare -A SUBTREE_REMOTE=(
   [chuffed]="https://github.com/Dekker1/chuffed.git"
+  [chuffed_aekh]="https://github.com/aekh/chuffed.git"
   [gecode]="https://github.com/Dekker1/gecode.git"
   [minizinc]="git@gitlab.com:minizinc/minizinc.git"
+)
+declare -A SUBTREE_BRANCH=(
+  [chuffed_aekh]="master"
 )
 
 updated_any=0
@@ -27,14 +31,15 @@ for prefix_path in software/*; do
 
   name="$(basename "$prefix_path")"
   remote="${SUBTREE_REMOTE[$name]-}"
+  target_branch="${SUBTREE_BRANCH[$name]-$DEFAULT_TARGET_BRANCH}"
 
   if [ -z "${remote}" ]; then
     echo "skip: no remote configured for $prefix_path"
     continue
   fi
 
-  echo "updating $prefix_path from $remote ($TARGET_BRANCH)"
-  git subtree pull --prefix "$prefix_path" "$remote" "$TARGET_BRANCH" --squash
+  echo "updating $prefix_path from $remote ($target_branch)"
+  git subtree pull --prefix "$prefix_path" "$remote" "$target_branch" --squash
   updated_any=1
 done
 
