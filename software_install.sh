@@ -26,7 +26,7 @@ build_and_install() {
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 
     echo "==> building ${name}"
-    cmake --build "${build_dir}" --config Release
+    cmake --build "${build_dir}" --config Release --parallel
 
     echo "==> installing ${name}"
     cmake --install "${build_dir}" --config Release
