@@ -44,7 +44,7 @@ CONFIGURATIONS = [
     Configuration(
         "Chuffed Prop",
         solver=minizinc.Solver.lookup("org.chuffed.chuffed_aekh"),
-        extra_data={"mode": 666},
+        extra_data={"mode": 9},
     ),
 ]
 
