@@ -1,0 +1,17 @@
+[project]
+name = "cp22-extras"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mzn-bench",
+]
+
+[tool.uv.sources]
+mzn-bench = { git = "https://github.com/MiniZinc/mzn-bench.git", rev = "feat/mult_model" }
+
+[dependency-groups]
+dev = [
+    "black>=26.1.0",
+]

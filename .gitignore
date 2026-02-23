@@ -1,0 +1,18 @@
+# MiniZinc
+
+*.fzn
+*.ozn
+*.mzp
+
+# Python
+
+venv/
+__pycache__
+*.py[cod]
+*$py.class
+
+# Software
+software/install
+
+# Raw results (aggregation in results/ is lossless)
+output/
