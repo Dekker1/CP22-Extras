@@ -20,24 +20,33 @@ if [ ! -d "${SCRIPT_DIR}/.venv" ]; then
 fi
 source "${SCRIPT_DIR}/.venv/bin/activate"
 
-# Build and install local subtree software into software/install.
-cmake -S "${SCRIPT_DIR}/software/gecode" -B "${SCRIPT_DIR}/software/gecode/build" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}"
-cmake --build "${SCRIPT_DIR}/software/gecode/build" --config Release
-cmake --install "${SCRIPT_DIR}/software/gecode/build" --config Release
-
-cmake -S "${SCRIPT_DIR}/software/minizinc" -B "${SCRIPT_DIR}/software/minizinc/build" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}"
-cmake --build "${SCRIPT_DIR}/software/minizinc/build" --config Release
-cmake --install "${SCRIPT_DIR}/software/minizinc/build" --config Release
-
-cmake -S "${SCRIPT_DIR}/software/chuffed" -B "${SCRIPT_DIR}/software/chuffed/build" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}"
-cmake --build "${SCRIPT_DIR}/software/chuffed/build" --config Release
-cmake --install "${SCRIPT_DIR}/software/chuffed/build" --config Release
-
 export PATH="${INSTALL_PREFIX}/bin:${PATH}"
 export LD_LIBRARY_PATH="${INSTALL_PREFIX}/lib:${INSTALL_PREFIX}/lib64:${LD_LIBRARY_PATH:-}"
+
+EXPECTED_MINIZINC="${INSTALL_PREFIX}/bin/minizinc"
+if [ ! -x "${EXPECTED_MINIZINC}" ]; then
+    >&2 echo "error: ${EXPECTED_MINIZINC} not found."
+    >&2 echo "run ./software_install.sh first"
+    return 1
+fi
+
+ACTIVE_MINIZINC="$(command -v minizinc || true)"
+if [ "${ACTIVE_MINIZINC}" != "${EXPECTED_MINIZINC}" ]; then
+    >&2 echo "error: active minizinc is '${ACTIVE_MINIZINC}', expected '${EXPECTED_MINIZINC}'"
+    return 1
+fi
+
+SOLVERS_JSON="$(minizinc --solvers-json 2>/dev/null || true)"
+if [ -z "${SOLVERS_JSON}" ]; then
+    >&2 echo "error: failed to query minizinc --solvers-json"
+    return 1
+fi
+
+if ! printf '%s\n' "${SOLVERS_JSON}" | grep -Fq "\"${INSTALL_PREFIX}/bin/fzn-gecode\""; then
+    >&2 echo "error: minizinc --solvers-json does not reference ${INSTALL_PREFIX}/bin/fzn-gecode"
+    return 1
+fi
+if ! printf '%s\n' "${SOLVERS_JSON}" | grep -Fq "\"${INSTALL_PREFIX}/bin/fzn-chuffed\""; then
+    >&2 echo "error: minizinc --solvers-json does not reference ${INSTALL_PREFIX}/bin/fzn-chuffed"
+    return 1
+fi
