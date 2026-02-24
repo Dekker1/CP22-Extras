@@ -1,5 +1,8 @@
 include "../blackbox_impl.mzn";
 
+% Disable new opt behaviour in MiniZinc to allow manual optimization used in model.
+mzn_absent_zero = false;
+
 % === Meta Parameters ============================================= %
 
 int: mode; %%  -2  decomposition
