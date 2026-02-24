@@ -51,8 +51,14 @@ CONFIGURATIONS = [
 for c in range(len(CONFIGURATIONS)):
     CONFIGURATIONS[c].extra_data["Case"] = f"{OBJECTIVE.value}"
 
+instances_csv = Path(f"./jobshop_instances_{OBJECTIVE.value}.csv")
+if not instances_csv.exists():
+    raise SystemExit(
+        f"error: instance file not found: {instances_csv} (run create_instances.py first)"
+    )
+
 schedule(
-    instances=Path("./jobshop_instances.csv"),
+    instances=instances_csv,
     timeout=timedelta(minutes=20),
     configurations=CONFIGURATIONS,
     memory=8192,
