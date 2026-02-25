@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import csv
 import math
 import re
@@ -73,6 +74,7 @@ def filter_rows(
     objective: str,
     generated_root: Path,
     repo_root: Path,
+    alloc1_only: bool = False,
 ) -> List[Dict[str, str]]:
     filtered: List[Dict[str, str]] = []
     n_agents_cache: Dict[Path, int] = {}
@@ -102,29 +104,49 @@ def filter_rows(
         extra_path_rel = extra_path.relative_to(repo_root).as_posix()
         updated = dict(row)
         updated["data_file"] = f"{data_file}:{extra_path_rel}"
+
+        if alloc1_only and not name.endswith("_alloc1.dzn"):
+            continue
+
         filtered.append(updated)
 
     return filtered
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Create objective-specific jobshop instance CSVs"
+    )
+    parser.add_argument(
+        "--alloc1-only",
+        action="store_true",
+        help="Only include source data files ending with '_alloc1.dzn' in generated CSVs",
+    )
+    args = parser.parse_args()
+
     repo_root = Path(__file__).resolve().parent
     instances_csv = repo_root / "jobshop_instances.csv"
 
     with instances_csv.open(newline="", encoding="utf-8") as fh:
         reader = csv.DictReader(fh)
         if reader.fieldnames != ["problem", "model", "data_file"]:
-            raise ValueError("jobshop_instances.csv must have header: problem,model,data_file")
+            raise ValueError(
+                "jobshop_instances.csv must have header: problem,model,data_file"
+            )
         rows = list(reader)
 
     generated_root = repo_root / "jobshop" / "generated_bounds"
 
     for objective in OBJECTIVES:
-        selected_rows = filter_rows(rows, objective, generated_root, repo_root)
+        selected_rows = filter_rows(
+            rows, objective, generated_root, repo_root, alloc1_only=args.alloc1_only
+        )
 
         output_csv = repo_root / f"jobshop_instances_{objective}.csv"
         with output_csv.open("w", newline="", encoding="utf-8") as fh:
-            writer = csv.DictWriter(fh, fieldnames=["problem", "model", "data_file"], dialect="unix")
+            writer = csv.DictWriter(
+                fh, fieldnames=["problem", "model", "data_file"], dialect="unix"
+            )
             writer.writeheader()
             writer.writerows(selected_rows)
 
