@@ -78,12 +78,12 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "mzn-bench", git = "https://github.com/MiniZinc/mzn-bench.git?rev=feat%2Fmult_model" }]
+requires-dist = [{ name = "mzn-bench", git = "https://github.com/MiniZinc/mzn-bench.git?rev=develop" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=26.1.0" },
-    { name = "mzn-bench", extras = ["scripts"], git = "https://github.com/MiniZinc/mzn-bench.git?rev=feat%2Fmult_model" },
+    { name = "mzn-bench", extras = ["scripts"], git = "https://github.com/MiniZinc/mzn-bench.git?rev=develop" },
 ]
 
 [[package]]
@@ -115,8 +115,8 @@ wheels = [
 
 [[package]]
 name = "mzn-bench"
-version = "0.1.0"
-source = { git = "https://github.com/MiniZinc/mzn-bench.git?rev=feat%2Fmult_model#3345e1d375cc8bb10a08661b7cef79911d742aff" }
+version = "0.3.0"
+source = { git = "https://github.com/MiniZinc/mzn-bench.git?rev=develop#e037a3793d8ac63e440777507f1b8295c8b86d7f" }
 dependencies = [
     { name = "click" },
     { name = "minizinc" },

@@ -3,6 +3,8 @@ include "../blackbox_impl.mzn";
 % Disable new opt behaviour in MiniZinc to allow manual optimization used in model.
 mzn_absent_zero = false;
 
+int: my_inf = 500000000;
+
 % === Meta Parameters ============================================= %
 
 int: mode; %% 0 (minnimal), -2 (decomp), 9 (lb), 10 (lb no daemon)
@@ -150,20 +152,21 @@ solve :: searchann minimize obj;
 predicate spread(var int: v, array [int] of var int: X, var int: S, int: scale) =
 	if mode = 666 then
 		spread_BB(v, X, S, scale)
-  elseif mode = -1 then
+  elseif mode < 0 then
     spread_decomp(v, X, S, scale)
-  elseif mode = -2 then
-    spread_decomp2(X, S, v, scale)
-  elseif mode = -3 then
-    spread_decomp2(X, S, v, scale) /\ variance_int(v, X, S, scale, mode)
+  % elseif mode = -2 then
+  %   spread_decomp2(X, S, v, scale)
+  % elseif mode = -3 then
+  %   spread_decomp2(X, S, v, scale) /\ variance_int(v, X, S, scale, mode)
   else
     variance_int(v, X, S, scale, mode)
   endif;
 
 predicate spread_decomp(var int: v, array [int] of var int: X, var int: S, int: scale) =
   let {int: N = card(index_set(X));
-       array [int] of var 0..infinity: sq = [ abs(N*X[i] - S) * abs(N*X[i] - S) | i in index_set(X) ]}
-  in v = (sum(sq)*scale) div (N*N*N);
+       array [int] of var int: sq = [ let { var 0..floor(sqrt(my_inf)): e = abs(N*X[i] - S); }  in e * e | i in index_set(X) ];
+       var 0..my_inf: s = sum(sq);}
+  in v = (s*scale) div (N*N*N);
 
 predicate spread_decomp2(array[int] of var int:X, var int: M, var int: v, int:s) =
   let { int: n=length(X);

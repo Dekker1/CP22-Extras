@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-mzn-bench = { git = "https://github.com/MiniZinc/mzn-bench.git", rev = "feat/mult_model" }
+mzn-bench = { git = "https://github.com/MiniZinc/mzn-bench.git", rev = "develop" }
 
 [dependency-groups]
 dev = [
