@@ -301,7 +301,7 @@ public:
       	if (reason == nullptr) {
       		reason = Reason_new(sz_in + 1);
 	     		for (int j = 0; j < sz_in; ++j) {
-			      (*reason)[j+1] = int_input->getValLit();
+			      (*reason)[j+1] = int_input[j].getValLit();
 	       	}
        	}
 
