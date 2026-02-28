@@ -78,6 +78,7 @@ build_and_install_chuffed_aekh() {
 # Build in dependency order so downstream projects can discover prior installs.
 build_and_install "gecode"
 build_and_install "minizinc"
+build_and_install "blackboxes"
 if [ "${INSTALL_CHUFFED_AEKH:-1}" = "1" ]; then
     build_and_install_chuffed_aekh
 fi

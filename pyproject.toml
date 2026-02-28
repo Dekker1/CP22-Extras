@@ -13,6 +13,6 @@ mzn-bench = { git = "https://github.com/MiniZinc/mzn-bench.git", rev = "develop"
 
 [dependency-groups]
 dev = [
-    "black>=26.1.0",
     "mzn-bench[scripts]>=0.1.0",
+    "ruff>=0.15.4",
 ]

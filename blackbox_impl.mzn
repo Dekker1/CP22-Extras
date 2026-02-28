@@ -16,6 +16,15 @@ predicate spread_BB(var int: v, array [int] of var int: X, var int: S, int: scal
 		reason,
 	) ::blackbox_dll("/home/dekker1/bench_bb/software/install/lib/libbb_spread.so");
 
+
+predicate spread_BB_val(var int: v, array [int] of var int: X, int: scale) =
+	blackbox(
+		X ++ [scale],
+		[],
+		[v],
+		[]
+	) ::blackbox_dll("/home/dekker1/bench_bb/software/install/lib/libspread_val.so");
+
 predicate gini_BB(var int: v, array [int] of var int: X, int: scale) =
 	let {
 		constraint assert(scale = 10000, "scale has been fixed in the blackbox library");
@@ -31,3 +40,11 @@ predicate gini_BB(var int: v, array [int] of var int: X, int: scale) =
 		[],
 		reason,
 	) ::blackbox_dll("/home/dekker1/bench_bb/software/install/lib/libbb_gini.so");
+
+predicate gini_BB_val(var int: v, array [int] of var int: X, int: scale) =
+	blackbox(
+		X ++ [scale],
+		[],
+		[v],
+		[]
+	) ::blackbox_dll("/home/dekker1/bench_bb/software/install/lib/libgini_val.so");
