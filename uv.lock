@@ -75,7 +75,7 @@ wheels = [
 [[package]]
 name = "mzn-bench"
 version = "0.3.0"
-source = { git = "https://github.com/MiniZinc/mzn-bench.git?rev=develop#e037a3793d8ac63e440777507f1b8295c8b86d7f" }
+source = { git = "https://github.com/MiniZinc/mzn-bench.git?rev=develop#0f6cf4868d1bd225088796d94feb90d956da64a4" }
 dependencies = [
     { name = "click" },
     { name = "minizinc" },
