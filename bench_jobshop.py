@@ -21,25 +21,30 @@ except ValueError as exc:
     raise SystemExit("error: objective must be one of: MaxEff, MinDis") from exc
 
 CONFIGURATIONS = [
-    Configuration(
-        "Gecode Dcmp",
-        solver=minizinc.Solver.lookup("org.gecode.gecode"),
-        extra_data={"mode": -2},
-    ),
+    # Configuration(
+    #     "Gecode Dcmp",
+    #     solver=minizinc.Solver.lookup("org.gecode.gecode"),
+    #     extra_data={"mode": -2},
+    # ),
     Configuration(
         "Chuffed Dcmp",
         solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
         extra_data={"mode": -2},
     ),
-    Configuration(
-        "Gecode BB",
-        solver=minizinc.Solver.lookup("org.gecode.gecode"),
-        extra_data={"mode": 666},
-    ),
+    # Configuration(
+    #     "Gecode BB",
+    #     solver=minizinc.Solver.lookup("org.gecode.gecode"),
+    #     extra_data={"mode": 666},
+    # ),
     Configuration(
         "Chuffed BB",
         solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
         extra_data={"mode": 666},
+    ),
+    Configuration(
+        "Chuffed BBval",
+        solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
+        extra_data={"mode": 333},
     ),
     Configuration(
         "Chuffed Prop",
