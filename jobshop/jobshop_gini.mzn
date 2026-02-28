@@ -159,6 +159,8 @@ solve :: searchann minimize obj;
 predicate gini(var int: v, array [int] of var int: X, var int: S, int: scale) =
 	if mode = 666 then
 		gini_BB(v, X, scale)
+	elseif mode = 333 then
+    gini_BB_val(v, X, scale)
   elseif mode = -1 \/ mode = -2 then
     gini_decomp(X, S, v, scale)
   elseif mode = 12 then

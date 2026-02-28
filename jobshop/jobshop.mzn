@@ -149,9 +149,12 @@ solve :: searchann minimize obj;
 %%         9 = Variance Lb Propagator as in paper.
 %%         0 = Propagate variance when X fixed.
 
+
 predicate spread(var int: v, array [int] of var int: X, var int: S, int: scale) =
 	if mode = 666 then
 		spread_BB(v, X, S, scale)
+	elseif mode = 333 then
+		spread_BB_val(v, X, scale)
   elseif mode < 0 then
     spread_decomp(v, X, S, scale)
   % elseif mode = -2 then
