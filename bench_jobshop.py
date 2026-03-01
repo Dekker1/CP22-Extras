@@ -29,6 +29,7 @@ CONFIGURATIONS = [
     Configuration(
         "Chuffed Dcmp",
         solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
+        free_search=True,
         extra_data={"mode": -2},
     ),
     # Configuration(
@@ -39,16 +40,19 @@ CONFIGURATIONS = [
     Configuration(
         "Chuffed BB",
         solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
+        free_search=True,
         extra_data={"mode": 666},
     ),
     Configuration(
         "Chuffed BBval",
         solver=minizinc.Solver.lookup("org.chuffed.chuffed"),
+        free_search=True,
         extra_data={"mode": 333},
     ),
     Configuration(
         "Chuffed Prop",
         solver=minizinc.Solver.lookup("org.chuffed.chuffed_aekh"),
+        free_search=True,
         extra_data={"mode": 9},
     ),
 ]
